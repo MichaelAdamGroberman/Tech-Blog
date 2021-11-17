@@ -1,25 +1,21 @@
-const express = require("express");
-const exphbs = require("express-handlebars");
-const path = require('path')
-const app = express();
+const express = require('express')
 const port = process.env.PORT || 5000;
-const routes = require('./src/controllers/index');
+const app = express();
+const routes = require('./controllers/index');
+const path = require('path')
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(routes);
 
-const db = require("./config/database")
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+const { sequelize } = require('./models');
+app.listen({ port: port }, async () => {
+    console.log(`listening on port ${port}`)
+    await sequelize.sync({ alter: true });
+    console.log('DB synced')
+})
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/public')));
-
-app.engine('hbs', exphbs({ extname: ".hbs" }));
-
-app.set('view engine', 'hbs');
-
-
-db.sync({ force: false }).then((data) => { console.log("db synced successfully"); }).catch((err) => { console.log("error syncing user model", err) });
-
-
-
-app.listen(port, () => console.log(`listening on port ${port}`));
