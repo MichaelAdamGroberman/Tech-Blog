@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.User, { foreignKey: 'userId' })
-      this.hasMany(models.Comment, { foreignKey: 'postId' })
+      this.belongsTo(models.User, { foreignKey: 'PosterId' })
+      this.hasMany(models.Comment, { onDelete: 'cascade' }, { foreignKey: 'PostId' })
 
     }
   };
   Post.init({
-    userId: {
+    PosterId: {
       type: DataTypes.INTEGER
     },
     heading: DataTypes.STRING,

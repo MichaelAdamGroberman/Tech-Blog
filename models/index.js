@@ -6,7 +6,7 @@ const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const db = {};
-const sequelize = require("../config/config")
+const sequelize = require("../config/database")
 
 fs
   .readdirSync(__dirname)
@@ -25,6 +25,6 @@ Object.keys(db).forEach(modelName => {
 });
 
 db.sequelize = sequelize;
-// db.Sequelize = Sequelize;
+db.Sequelize = Sequelize;
 
 module.exports = db;

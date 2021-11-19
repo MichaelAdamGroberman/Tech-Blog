@@ -6,4 +6,4 @@ const logged = (req, res, next) => {
     }
 };
 
-module.exports = withAuth;
+module.exports = logged;

@@ -1,0 +1,21 @@
+<nav>
+    <div class="links">
+        <a href="/">Home</a>
+        <a href="/logout">logout</a>
+    </div>
+    <div class="logo"> Your Dashboard</div>
+</nav>
+<main>
+      {{#each posts as |post|}}
+    <div class="post">
+        <div class="postheading">
+           <a href='/onePost/{{post.id}}'> <h3 class="postname postnamelink">{{post.heading}}</h3></a>
+            <p class="postauthor"> created: {{prettifyDate post.createdAt}} </p>
+        </div>
+        <div>test:</div>
+        <div class="postcontent">{{post.content}}</div>
+    </div>
+    {{/each}}
+<a type="button" class="btn btn-primary" href="/createpost">+ New Post</a>
+
+</main>

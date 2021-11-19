@@ -1,0 +1,48 @@
+<nav>
+    <div class="links">
+        {{#if auth}}
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">logout</a>
+        {{else}}
+        <a href="/login">login/signup</a>
+        {{/if}}
+    </div>
+    <div class="logo"> The Tech Blog</div>
+</nav>
+
+<main>
+{{post.Heading}}
+    <div class="post">
+        <div class="postheading">
+
+           <h3 class="postname">{{post.heading}}</h3>
+           
+            <p class="postauthor">      
+              {{#if (ifEquals sessuser post.PosterId)}}  
+                  created: {{prettifyDate post.createdAt}}  <a href='/editpost/{{post.id}}'>edit post</a>
+            {{else}}
+                created by:{{post.User.username}}  on: {{prettifyDate post.createdAt}} 
+               
+            {{/if}}  
+            </p>
+
+</p>
+        </div> 
+        <div class="postcontent">{{post.content}}</div>
+    </div>
+
+<a type="button" class="btn btn-primary" href="/createComment/{{post.id}}">+ New Comment</a>
+
+<h2>Comments:</h2>
+ {{#each comments as |comment|}}
+    <div class="post">
+        <div class="postheading">
+        {{#if (ifEquals sessuser comment.commentorid)}}  <a href="/edit/comment/{{comment.id}}">edit comment</a>{{/if}}
+            <p class="postauthor">created by: {{comment.User.username}}  on: {{prettifyDate comment.createdAt}} 
+ </p>
+        </div>
+        <div class="postcontent">{{comment.content}}</div>
+    </div>
+    {{/each}}
+</main>
+{{!-- {{prettifyDate post.createdAt}} --}}

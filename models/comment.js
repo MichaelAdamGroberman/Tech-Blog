@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, DataTypes
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
@@ -11,17 +11,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.User, { foreignKey: 'userId' })
-      this.belongsTo(models.Comment, { foreignKey: 'postId' })
+      this.belongsTo(models.User, { foreignKey: 'CommentorId' })
+      this.belongsTo(models.Comment, { foreignKey: 'PostId' })
 
     }
   };
   Comment.init({
     content: DataTypes.STRING,
-    userId: {
+    CommentorId: {
       type: DataTypes.INTEGER
     },
-    postId: {
+    PostId: {
       type: DataTypes.INTEGER
     }
   }, {

@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const logged = require('../../utils/logged')
 const { User, Post, Comment } = require('../../models')
 
 //create a comment
-router.post('/create/:id', logged, (req, res) => {
+router.post('/create', (req, res) => {
+    console.log(req.body)
     Comment.create({
-        userId: req.session.id,
-        postId: req.params.id,
+        CommentorId: req.session.user_id,
+        PostId: req.body.postId,
         content: req.body.content
     })
         .then(comment => res.json(comment))
@@ -15,6 +15,7 @@ router.post('/create/:id', logged, (req, res) => {
             res.status(500).json(err)
         });
 });
+
 
 
 //get one comment(for edit post comment)
@@ -29,29 +30,24 @@ router.get('/:id', (req, res) => {
 })
 
 //update comment
-router.put('/edit/:id', logged, (req, res) => {
+router.put('/edit', (req, res) => {
     //check if comment belongs to logged in user
+    console.log(req.body)
     if (req.body.userId === req.session.id) {
-        Post.Comment({
-            content: req.body.content
-        },
-            {
-                where: {
-                    id: req.params.id,
-                }
-            }).then(comment => {
-                if (!comment) {
-                    res.status(404).json({ Message: "Comment not found" })
-                    return;
-                }
+        Comment.update(
+            { content: req.body.content },
+            { where: { id: req.body.commentId } }
+        ).then(comment => {
+            if (!comment) {
+                res.status(404).json({ message: 'Comment not found' });
+                return;
             }
-            )
-            .catch(err => {
-                console.log(err);
-                res.status(500).json(err)
-            })
+            res.json(comment);
+        }).catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        })
     }
-
     // render warning page if someone is able to attempt an update on a comment they don't own
     else { res.render('Warning') }
 })
@@ -61,21 +57,20 @@ router.put('/edit/:id', logged, (req, res) => {
 //delete post
 router.delete('/delete', (req, res) => {
     //check if comment belongs to logged in user
-    if (req.body.userid === req.session.id) {
-        Comment.Destroy({
-            where: {
-                id: req.body.id
-            }
-        })
-            .then(comment => {
-                res.json(comment);
-            }).catch(err => {
-                console.log(err);
-                res.status(500).json(err)
-            });
+    console.log(req.body.commentId)
+    Comment.destroy({
+        where: {
+            id: req.body.commentId
+        }
+    })
+        .then(comment => {
+            res.json(comment);
+        }).catch(err => {
+            console.log(err);
+            res.status(500).json(err)
+        });
 
-    }
+}
     // render warning page if someone is able to attempt a delete on a comment they don't own
-    else { res.render('Warning') }
-})
+)
 module.exports = router;

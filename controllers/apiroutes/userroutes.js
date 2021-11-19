@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const { User } = require('../../models')
-
+const bcrypt = require('bcrypt')
 //register
 router.post('/reg', async (req, res) => {
     //create instance of user and post to db
+    console.log(req.body)
     User.create({
         username: req.body.username,
         password: req.body.password
@@ -14,7 +15,6 @@ router.post('/reg', async (req, res) => {
                 req.session.user_id = user.id;
                 req.session.username = user.username;
                 req.session.loggedIn = true;
-
                 res.json(user);
             });
         })
@@ -34,7 +34,6 @@ router.get('/:id', async (req, res) => {
             res.status(404).json({ message: 'user not found' });
             return;
         }
-        res.json(user);
     })
         .catch(err => {
             console.log(err);
@@ -43,26 +42,34 @@ router.get('/:id', async (req, res) => {
 })
 
 //login
-router.get('/login', async (req, res) => {
+router.post('/login', async (req, res) => {
+    console.log(req.body)
     User.findOne({
-        where: { userName: req.body.userName }
-    }).then(Userdata => {
-        if (!UserData) {
+        where: { username: req.body.username }
+    }).then(user => {
+        console.log(user)
+        if (!user) {
+
             res.status(404).json({ message: 'user not found' });
-            return;
+            return res;
         }
 
         //runs validate method from user model against input password
-        const validate = await Userdata.checkPassword(req.body.password)
+        let checkPassword = bcrypt.compareSync(req.body.password, user.password);
 
-        if (!validate) {
-            res.status(404).json({ message: "incorrect password or Username" });
-            return;
+        if (!checkPassword) {
+            res.status(404);
+            alert("incorrect password or Username")
+            return res;
         }
         req.session.save(() => {
-            req.session.id = Userdata.id;
-            req.session.auth = true;
-        })
+            req.session.user_id = user.id;
+            req.session.username = user.username;
+            req.session.loggedIn = true;
+            res.json(user);
+
+        }
+        )
 
     }).catch(err => {
         console.log(err);
@@ -72,19 +79,7 @@ router.get('/login', async (req, res) => {
 
 
 
-//logout
-router.post('/logout', (req, res) => {
-    //if logged in
-    if (req.session.auth) {
-        //reset session object 
-        req.session.destroy(() => {
-            res.status(204).end();
-        });
-    } else {
-        //not logged in
-        res.status(404).end();
-    }
-});
+
 
 
 

@@ -1,0 +1,25 @@
+<nav>
+    <div class="links">
+        {{#if auth}}
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">logout</a>
+        {{else}}
+        <a href="/login">login/signup</a>
+        {{/if}}
+    </div>
+    <div class="logo"> The Tech Blog</div>
+</nav>
+<main>
+{{#if posts}}
+    {{#each posts as |post|}}
+    <div class="post">
+        <div class="postheading">
+           <a href='/onePost/{{post.id}}'> <h3 class="postname postnamelink">{{post.heading}}</h3></a>
+            <p class="postauthor"> created by:{{post.User.username}} on: {{prettifyDate post.createdAt}} </p>
+        </div>
+        <div>test:</div>
+        <div class="postcontent">{{post.content}}</div>
+    </div>
+    {{/each}}
+    {{/if}}
+</main>

@@ -1,0 +1,34 @@
+{{#if (ifEquals userId comment.CommentorId)}} <nav>
+    <div class="links">
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">logout</a>
+    </div>
+    <div class="logo"> Your Dashboard</div>
+</nav>
+<main>
+  <div class="formContainer">
+    <div class="formheader">
+    <h3 class = "formtitle">new Comment</h3>
+
+    <a class= "cancel" href="/dashboard">X</a></div>
+<form class ="postForm">
+    
+    <input id="Commentid" value='{{comment.id}}' type="hidden" />
+    <input id="postId" value='{{comment.PostId}}' type="hidden" />
+
+  <div class="mb-3">
+       <label for="Comment Content">Comment Content</label>
+    <textarea class="form-control" id="commentContent" rows="3" >{{comment.content}}</textarea>
+  </div>
+
+  <button id = "postsubmit" type="submit" class="btn btn-primary">Submit</button></div>
+</form>
+<button onclick=drop() id="delete">Delete comment</button>
+</main>
+<script src="/js/editComment.js"></script>
+
+{{else}}
+<h1>you tried doing something disallowed. don't do it again</h1>
+<a href="/">return to homepage and think about what you did</a>
+{{/if}}

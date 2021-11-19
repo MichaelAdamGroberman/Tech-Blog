@@ -1,11 +1,10 @@
 const router = require('express').Router();
-const logged = require('../../utils/logged')
 const { User, Post, Comment } = require('../../models')
-
+router.post('/test', (req, res) => { console.log(req.body) })
 //create a post
-router.post('/create', logged, (req, res) => {
+router.post('/create', (req, res) => {
     Post.create({
-        userId: req.session.id,
+        PosterId: req.session.user_id,
         heading: req.body.heading,
         content: req.body.content
     })
@@ -16,7 +15,7 @@ router.post('/create', logged, (req, res) => {
         });
 });
 
-//get all posts (for homepage)
+//get all posts 
 router.get('/all', (req, res) => {
     Post.findALl({
         order: [['created_at', 'DESC']],
@@ -34,7 +33,7 @@ router.get('/all', (req, res) => {
 
 
 //get all posts by user(for dashboard)
-router.get('/user/:id', logged, (req, res) => {
+router.get('/user/:id', (req, res) => {
     //check if dashboard belongs to logged in user
     if (req.params.id === req.session.id) {
         Post.findALl({
@@ -58,7 +57,7 @@ router.get('/full/:id', (req, res) => {
                 },
                 {
                     model: Comment,
-                    attributes: ['id', 'content', 'userId', 'postId', 'created_at'],
+                    attributes: ['id', 'content', 'commentorId', 'postId', 'created_at'],
                     include: {
                         model: User,
                         attributes: ['username']
@@ -83,7 +82,7 @@ router.get('/:id', (req, res) => {
 })
 
 //update post
-router.put('/edit/:id', logged, (req, res) => {
+router.put('/edit/:id', (req, res) => {
     //check if post belongs to logged in user
     if (req.body.userId === req.session.id) {
         Post.update({
